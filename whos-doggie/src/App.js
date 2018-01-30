@@ -10,13 +10,14 @@ function isEmpty(obj) {
 }
 
 class TileImage extends Component {
-  state = { clicked: false};
+  state = { clicked: false, gameRestart: false};
 
   componentDidUpdate(prevProps, prevState) {
     const prevDogName = prevProps.dogName;
     const { dogName } = this.props;
-    if(prevDogName !== dogName ) {
-      this.setState({clicked: false});
+    const { gameRestart } = this.props;
+    if(prevDogName !== dogName && gameRestart) {
+      this.setState({clicked: false, gameRestart: true});
     } 
   }
 
@@ -24,7 +25,7 @@ class TileImage extends Component {
     //TODO: Currently, dogs can be clicked even when the correct one is already clicked
     const { clicked } = this.state;
     const { isAnswer } = this.props;
-    this.setState({clicked: true});
+    this.setState({clicked: true, gameRestart: true});
     if(isAnswer && !clicked) {
       setTimeout(() => {
         this.resetTile()
