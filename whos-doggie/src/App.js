@@ -10,23 +10,25 @@ function isEmpty(obj) {
 }
 
 class TileImage extends Component {
-  state = { clicked: false, gameRestart: false};
+  state = { clicked: false};
 
   componentDidUpdate(prevProps, prevState) {
     const prevDogName = prevProps.dogName;
-    const { dogName } = this.props;
-    const { gameRestart } = this.props;
-    if(prevDogName !== dogName && gameRestart) {
-      this.setState({clicked: false, gameRestart: true});
-    } 
-  }
+    const { dogName, restart } = this.props;
+    // const { gameRestart } = this.props;
+    // if(prevDogName !== dogName && gameRestart) {
+    if(restart) {
+      this.setState({clicked: false});
+      this.props.stopRestart();
+    }
+  } 
 
   handleClick(e) {
     //TODO: Currently, dogs can be clicked even when the correct one is already clicked
     const { clicked } = this.state;
-    const { isAnswer } = this.props;
+    const { isAnswer, handleClick } = this.props;
 
-    this.setState({clicked: true, gameRestart: true});
+    this.setState({clicked: true});
 
     if(isAnswer && !clicked) {
       setTimeout(() => {
@@ -38,6 +40,7 @@ class TileImage extends Component {
     this.setState({clicked: false});
 
     this.props.randomizeDogs();
+    this.props.startRestart();
   }
 
   render() {
@@ -62,26 +65,34 @@ class TileImage extends Component {
   }
 }
 
-const PicturePanel = ({selectedDogs, selectedDog, randomizeDogs}) => {
+const PicturePanel = (props) => {
+  const { 
+    selectedDog, 
+    selectedDogs,
+    randomizeDogs,
+    restart,
+    startRestart,
+    stopRestart
+   } = props;
   return (
     <div className="PictureHolder">
       {
-        selectedDogs.map( (dogs, index) => {
-        var dogName = Object.keys(dogs)[0];
-        var imageSrc = dogs[dogName];
-
-        return <TileImage
+        Object.keys(selectedDogs).map( (dogName, index) => {
+          const imageSrc = selectedDogs[dogName];
+          return <TileImage
                   key={index}
                   dogName={dogName}
                   imageSrc={imageSrc}
                   randomizeDogs={randomizeDogs}
                   isAnswer={selectedDog === dogName}
-               />
+                  restart={restart}
+                  startRestart={startRestart}
+                  stopRestart={stopRestart}
+                  />
         })
       }
     </div>
   );
-
 }
 
 const NamePanel = ({ selectedDog }) => {
@@ -96,8 +107,9 @@ class App extends Component {
   state = {
     breeds: [],
     images: {},
-    selectedDogs: [],
-    selectedDog: ''
+    selectedDogs: {},
+    selectedDog: '',
+    restart: false
   };
 
   componentWillMount() {
@@ -150,16 +162,16 @@ class App extends Component {
 
   randomizeDogs() {
     const { breeds, images } = this.state;
-    var selectedDogs = [];
+    var selectedDogs = {};
     var selectedDog = '';
     var breedLength = breeds.length;
 
-    for(var i = 0; i < 6; i++) {
+    while (Object.keys(selectedDogs).length < 6) {
       var index = Math.round(Math.random() * (breedLength - 1));
       var breed = breeds[index];
       var image = images[breed];
 
-      selectedDogs.push({[breed]: image});
+      selectedDogs[breed] = image;
 
       selectedDog = (selectedDog === '')?      breed :
                     (Math.random() * 1 < 0.5)? breed : selectedDog;
@@ -171,8 +183,12 @@ class App extends Component {
     });
   }
 
+  startRestart() { this.setState({restart: true})}
+
+  stopRestart() { this.setState({restart: false})}
+
   render() {
-    const { breeds, images, selectedDogs, selectedDog } = this.state;
+    const { breeds, images, selectedDogs, selectedDog, restart } = this.state;
     const breedLength = breeds.length;
 
     if(breedLength === 0 || isEmpty(images)) {
@@ -187,6 +203,9 @@ class App extends Component {
           selectedDogs={selectedDogs}
           selectedDog={selectedDog}
           randomizeDogs={() => this.randomizeDogs()}
+          restart={restart}
+          startRestart={() => this.startRestart()}
+          stopRestart={() => this.stopRestart()}
         />
       </div>
     );
