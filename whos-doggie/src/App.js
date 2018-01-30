@@ -13,10 +13,8 @@ class TileImage extends Component {
   state = { clicked: false};
 
   componentDidUpdate(prevProps, prevState) {
-    const prevDogName = prevProps.dogName;
-    const { dogName, restart } = this.props;
-    // const { gameRestart } = this.props;
-    // if(prevDogName !== dogName && gameRestart) {
+    const { restart } = this.props;
+
     if(restart) {
       this.setState({clicked: false});
       this.props.stopRestart();
@@ -26,7 +24,7 @@ class TileImage extends Component {
   handleClick(e) {
     //TODO: Currently, dogs can be clicked even when the correct one is already clicked
     const { clicked } = this.state;
-    const { isAnswer, handleClick } = this.props;
+    const { isAnswer } = this.props;
 
     this.setState({clicked: true});
 
@@ -54,12 +52,15 @@ class TileImage extends Component {
 
     return (
       <div style={{position: 'relative'}}>
+
         <img alt="No Content" src={imageSrc}></img>
+
         <div className={comboClass} onClick={e => this.handleClick()} >
           {
             (clicked)? dogName: ''
           }
         </div>
+
       </div>
     );
   }
@@ -67,27 +68,20 @@ class TileImage extends Component {
 
 const PicturePanel = (props) => {
   const { 
-    selectedDog, 
-    selectedDogs,
-    randomizeDogs,
-    restart,
-    startRestart,
-    stopRestart
+    selectedDog, selectedDogs
    } = props;
   return (
     <div className="PictureHolder">
       {
         Object.keys(selectedDogs).map( (dogName, index) => {
           const imageSrc = selectedDogs[dogName];
+          const isAnswer = selectedDog === dogName;
           return <TileImage
                   key={index}
                   dogName={dogName}
                   imageSrc={imageSrc}
-                  randomizeDogs={randomizeDogs}
-                  isAnswer={selectedDog === dogName}
-                  restart={restart}
-                  startRestart={startRestart}
-                  stopRestart={stopRestart}
+                  isAnswer={isAnswer}
+                  {...props}
                   />
         })
       }
@@ -188,7 +182,11 @@ class App extends Component {
   stopRestart() { this.setState({restart: false})}
 
   render() {
-    const { breeds, images, selectedDogs, selectedDog, restart } = this.state;
+    const { 
+      breeds, images, 
+      selectedDogs, selectedDog, 
+      restart
+     } = this.state;
     const breedLength = breeds.length;
 
     if(breedLength === 0 || isEmpty(images)) {
@@ -202,8 +200,8 @@ class App extends Component {
         <PicturePanel
           selectedDogs={selectedDogs}
           selectedDog={selectedDog}
-          randomizeDogs={() => this.randomizeDogs()}
           restart={restart}
+          randomizeDogs={() => this.randomizeDogs()}
           startRestart={() => this.startRestart()}
           stopRestart={() => this.stopRestart()}
         />
