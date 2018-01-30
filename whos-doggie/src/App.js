@@ -25,7 +25,9 @@ class TileImage extends Component {
     //TODO: Currently, dogs can be clicked even when the correct one is already clicked
     const { clicked } = this.state;
     const { isAnswer } = this.props;
+
     this.setState({clicked: true, gameRestart: true});
+
     if(isAnswer && !clicked) {
       setTimeout(() => {
         this.resetTile()
@@ -34,12 +36,14 @@ class TileImage extends Component {
   }
   resetTile() {
     this.setState({clicked: false});
+
     this.props.randomizeDogs();
   }
 
   render() {
     const { clicked } = this.state;
     const {dogName, imageSrc, isAnswer } = this.props;
+
     let overlayClass = (!clicked)? '' :
                        (isAnswer)? 'correct ':
                                    'incorrect ';
@@ -65,6 +69,7 @@ const PicturePanel = ({selectedDogs, selectedDog, randomizeDogs}) => {
         selectedDogs.map( (dogs, index) => {
         var dogName = Object.keys(dogs)[0];
         var imageSrc = dogs[dogName];
+
         return <TileImage
                   key={index}
                   dogName={dogName}
@@ -104,8 +109,8 @@ class App extends Component {
       .then( async breeds => {
         const images = await this.getBreedImages(breeds);
         this.setState({images});
-        //TODO: fix images to not repeat the same image
-        this.randomizeDogs();
+        
+        this.randomizeDogs();//TODO: fix images to not repeat the same image
       })
       .catch( error => console.log(error));
   }
