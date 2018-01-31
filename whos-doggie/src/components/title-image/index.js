@@ -13,7 +13,6 @@ class TileImage extends Component {
   }
 
   handleClick(e) {
-    //TODO: Currently, dogs can be clicked even when the correct one is already clicked
     const { clicked } = this.state;
     const { isAnswer } = this.props;
 

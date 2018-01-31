@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import TileImage from './components/title-image';
+import PicturePanel from './components/pictue-panel'
+import NamePanel from './components/name-panel'
 import './App.css';
+
+const gameTileCount = 6;
 
 function isEmpty(obj) {
   for (var key in obj) {
@@ -8,35 +11,6 @@ function isEmpty(obj) {
   }
   return true;
 }
-
-const PicturePanel = ({ selectedDogs, selectedDog, randomizeDogs }) => {
-  return (
-    <div className="PictureHolder">
-      {selectedDogs.map((dogs, index) => {
-        const dogName = Object.keys(dogs)[0];
-        const imageSrc = dogs[dogName];
-
-        return (
-          <TileImage
-            key={index}
-            dogName={dogName}
-            imageSrc={imageSrc}
-            randomizeDogs={randomizeDogs}
-            isAnswer={selectedDog === dogName}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-const NamePanel = ({ selectedDog }) => {
-  return (
-    <div className="ButtonHolder">
-      <h1>{`Which doggie is a ${selectedDog}?`}</h1>
-    </div>
-  );
-};
 
 class App extends Component {
   state = {
@@ -92,7 +66,7 @@ class App extends Component {
     let selectedDog = '';
     const breedLength = breeds.length;
 
-    for (var i = 0; i < 6; i++) {
+    for (let i = 0; i < gameTileCount; i++) {
       const index = Math.round(Math.random() * (breedLength - 1));
       const breed = breeds[index];
       const image = images[index];
