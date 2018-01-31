@@ -13,8 +13,8 @@ const PicturePanel = ({ selectedDogs, selectedDog, randomizeDogs }) => {
   return (
     <div className="PictureHolder">
       {selectedDogs.map((dogs, index) => {
-        var dogName = Object.keys(dogs)[0];
-        var imageSrc = dogs[dogName];
+        const dogName = Object.keys(dogs)[0];
+        const imageSrc = dogs[dogName];
 
         return (
           <TileImage
@@ -88,14 +88,14 @@ class App extends Component {
 
   randomizeDogs() {
     const { breeds, images } = this.state;
-    var selectedDogs = [];
-    var selectedDog = '';
-    var breedLength = breeds.length;
+    const selectedDogs = [];
+    let selectedDog = '';
+    const breedLength = breeds.length;
 
     for (var i = 0; i < 6; i++) {
-      var index = Math.round(Math.random() * (breedLength - 1));
-      var breed = breeds[index];
-      var image = images[breed];
+      const index = Math.round(Math.random() * (breedLength - 1));
+      const breed = breeds[index];
+      const image = images[index];
 
       selectedDogs.push({ [breed]: image });
 
