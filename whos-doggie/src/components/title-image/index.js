@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
 class TileImage extends Component {
-  state = { clicked: false, gameRestart: false };
+  state = { clicked: false };
 
   componentDidUpdate(prevProps, prevState) {
     const prevDogName = prevProps.dogName;
     const { dogName } = this.props;
-    const { gameRestart } = this.props;
-    if (prevDogName !== dogName && gameRestart) {
-      this.setState({ clicked: false, gameRestart: true });
+    if ( prevDogName != dogName) {
+      this.setState({ clicked: false });
     }
   }
 
@@ -16,17 +15,13 @@ class TileImage extends Component {
     const { clicked } = this.state;
     const { isAnswer } = this.props;
 
-    this.setState({ clicked: true, gameRestart: true });
+    this.setState({ clicked: true });
 
     if (isAnswer && !clicked) {
       setTimeout(() => {
-        this.resetTile();
-      }, 1500);
+        this.props.randomizeDogs();
+      }, 500);
     }
-  }
-  resetTile() {
-    this.setState({ clicked: false });
-    this.props.randomizeDogs();
   }
 
   render() {
