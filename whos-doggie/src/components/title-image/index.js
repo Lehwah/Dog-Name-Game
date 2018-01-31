@@ -32,7 +32,7 @@ class TileImage extends Component {
     const comboClass = 'overlay ' + overlayClass;
 
     return (
-      <div style={{ position: 'relative' }}>
+      <div class="dog-block">
         <img alt="No Content" src={imageSrc} />
         <div className={comboClass} onClick={e => this.handleClick()}>
           {clicked ? dogName : ''}

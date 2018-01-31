@@ -3,7 +3,6 @@ html, body, #root, .App {
   height: 100%;
 }
 .App {
-  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -36,48 +35,61 @@ html, body, #root, .App {
   to { transform: rotate(360deg); }
 }
 
-.PictureHolder {
-  display: flex;
-  width: 420px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
+.pictures-holder {
+  margin: 0;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
 }
 
 img {
-  width: 200px;
-  height: 200px;
-  margin-left: 10px;
-  margin-bottom: 10px;
+  width: 150px;
+  height: 150px;
   z-index: 1;
+  overflow: hidden;
+  border-radius: 100%;
 }
 
-.ButtonHolder {
-  width: 500px;
-  height: 100px;
+.title-name {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 1.5em;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-content: center;
 }
 
 .correct {
-  background-color: green;
+  opacity: 1 !important;
+  box-shadow: 0 0 20px 5px green;
+  text-shadow: 2px 2px 2px black;
 }
 
 .incorrect {
-  background-color: red;
+  opacity: 1 !important;
+  box-shadow: 0 0 20px 5px red;
+  text-shadow: 2px 2px 2px black;
+}
+
+.dog-block {
+  position: relative;
+  width: 150px;
+  display: inline-block;
+  margin: 10px
 }
 
 .overlay {
-  opacity: 0.8;
-  width: 200px;
-  height: 200px;
+  opacity: 0;
+  width: 150px;
+  height: 150px;
   position: absolute;
   top: 0px;
-  left: 10px;
-  z-index: 2;
   color: white;
-  display: flex;
+  z-index: 2;
+  line-height: 10;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  border-radius: 100%;
+  box-sizing: border-box;
+  transition: opacity .25s;
 }

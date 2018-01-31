@@ -5,8 +5,8 @@ class NamePanel extends Component {
     const { selectedDog } = this.props;
 
     return (
-      <div className="ButtonHolder">
-        <h1>{`Which doggie is a ${selectedDog}?`}</h1>
+      <div className="title-name">
+        {`Which doggie is a ${selectedDog}?`}
       </div>
     );
   }

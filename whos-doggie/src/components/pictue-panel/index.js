@@ -6,7 +6,7 @@ class PicturePanel extends Component {
     const { selectedDogs, selectedDog, randomizeDogs } = this.props;
 
     return (
-      <div className="PictureHolder">
+      <div className="pictures-holder">
         {selectedDogs.map((dogs, index) => {
           const dogName = Object.keys(dogs)[0];
           const imageSrc = dogs[dogName];
