@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import TileImage from './../title-image';
 
 class PicturePanel extends Component {
+  render() {
+    const { selectedDogs, selectedDog, randomizeDogs } = this.props;
 
-    render() {
-      const { selectedDogs, selectedDog, randomizeDogs } = this.props;
-  
-      return (<div className="PictureHolder">
+    return (
+      <div className="PictureHolder">
         {selectedDogs.map((dogs, index) => {
           const dogName = Object.keys(dogs)[0];
           const imageSrc = dogs[dogName];
-  
+
           return (
             <TileImage
               key={index}
@@ -21,8 +21,9 @@ class PicturePanel extends Component {
             />
           );
         })}
-      </div>)
-    }
-  };
+      </div>
+    );
+  }
+}
 
-  export default PicturePanel;
+export default PicturePanel;

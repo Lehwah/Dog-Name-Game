@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PicturePanel from './components/pictue-panel'
-import NamePanel from './components/name-panel'
+import PicturePanel from './components/pictue-panel';
+import NamePanel from './components/name-panel';
 import './App.css';
 
 const gameTileCount = 6;
@@ -21,35 +21,36 @@ class App extends Component {
   };
 
   componentWillMount = async () => {
-    const breeds = await this.getBreeds()
+    const breeds = await this.getBreeds();
     this.setState({ breeds });
     const images = await this.getBreedImages(breeds);
     this.setState({ images });
     this.randomizeDogs();
-  }
+  };
 
   getBreeds = async () => {
     const response = await fetch('/api/breeds/list');
     const body = await response.json();
 
-    if (response.status !== 200) { 
+    if (response.status !== 200) {
       throw Error(body.message);
-    }
-    else {
+    } else {
       return body.message;
     }
   };
 
   getBreedImages = async breeds => {
-    return await Promise.all(breeds.map( async breed => {
-      if (localStorage[breed]) {
-        return localStorage[breed];
-      } else {
-        const image = await this.getBreedImage(breed);
-        localStorage.setItem(breed, image);
-        return image;
-      }
-    }))
+    return await Promise.all(
+      breeds.map(async breed => {
+        if (localStorage[breed]) {
+          return localStorage[breed];
+        } else {
+          const image = await this.getBreedImage(breed);
+          localStorage.setItem(breed, image);
+          return image;
+        }
+      })
+    );
   };
 
   getBreedImage = async breed => {
@@ -89,7 +90,7 @@ class App extends Component {
     const { breeds, images, selectedDogs, selectedDog } = this.state;
 
     if (!breeds.length || isEmpty(images)) {
-      return (<div className="App" />);
+      return <div className="App" />;
     }
 
     return (
