@@ -10,11 +10,6 @@ class TileImage extends Component {
       this.setState({clicked: false});
       this.props.stopRestart();
     }
-    // const prevDogName = prevProps.dogName;
-    // const { dogName } = this.props;
-    // if ( prevDogName !== dogName) {
-    //   this.setState({ clicked: false });
-    // }
   }
 
   resetTile() {
@@ -36,16 +31,6 @@ class TileImage extends Component {
         this.resetTile()
       }, 1500);
     }
-    // const { clicked } = this.state;
-    // const { isAnswer } = this.props;
-    //
-    // this.setState({ clicked: true });
-    //
-    // if (isAnswer && !clicked) {
-    //   setTimeout(() => {
-    //     this.props.randomizeDogs();
-    //   }, 500);
-    // }
   }
 
   render() {
