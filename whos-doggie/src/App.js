@@ -1,101 +1,16 @@
 import React, { Component } from 'react';
+import PicturePanel from './components/pictue-panel';
+import NamePanel from './components/name-panel';
 import './App.css';
 
+const gameTileCount = 6;
+
 function isEmpty(obj) {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
-            return false;
-    }
-    return true;
-}
-
-class TileImage extends Component {
-  state = { clicked: false};
-
-  componentDidUpdate(prevProps, prevState) {
-    const { restart } = this.props;
-
-    if(restart) {
-      this.setState({clicked: false});
-      this.props.stopRestart();
-    }
-  } 
-
-  handleClick(e) {
-    //TODO: Currently, dogs can be clicked even when the correct one is already clicked
-    const { clicked } = this.state;
-    const { isAnswer } = this.props;
-
-    this.setState({clicked: true});
-
-    if(isAnswer && !clicked) {
-      setTimeout(() => {
-        this.resetTile()
-      }, 1500);
-    } 
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
   }
-  resetTile() {
-    this.setState({clicked: false});
-
-    this.props.randomizeDogs();
-    this.props.startRestart();
-  }
-
-  render() {
-    const { clicked } = this.state;
-    const {dogName, imageSrc, isAnswer } = this.props;
-
-    let overlayClass = (!clicked)? '' :
-                       (isAnswer)? 'correct ':
-                                   'incorrect ';
-    const comboClass = 'overlay ' + overlayClass;
-
-    return (
-      <div style={{position: 'relative'}}>
-
-        <img alt="No Content" src={imageSrc}></img>
-
-        <div className={comboClass} onClick={e => this.handleClick()} >
-          {
-            (clicked)? dogName: ''
-          }
-        </div>
-
-      </div>
-    );
-  }
+  return true;
 }
-
-const PicturePanel = (props) => {
-  const { 
-    selectedDog, selectedDogs
-   } = props;
-  return (
-    <div className="PictureHolder">
-      {
-        Object.keys(selectedDogs).map( (dogName, index) => {
-          const imageSrc = selectedDogs[dogName];
-          const isAnswer = selectedDog === dogName;
-          return <TileImage
-                  key={index}
-                  dogName={dogName}
-                  imageSrc={imageSrc}
-                  isAnswer={isAnswer}
-                  {...props}
-                  />
-        })
-      }
-    </div>
-  );
-}
-
-const NamePanel = ({ selectedDog }) => {
-  return (
-    <div className="ButtonHolder">
-      <h1>{`Which doggie is a ${selectedDog}?`}</h1>
-    </div>
-  );
-};
 
 class App extends Component {
   state = {
@@ -106,71 +21,66 @@ class App extends Component {
     restart: false
   };
 
-  componentWillMount() {
-    this.getBreeds()
-      .then( breeds => {
-        this.setState({breeds});
-        return breeds;
-      })
-      .then( async breeds => {
-        const images = await this.getBreedImages(breeds);
-        this.setState({images});
-        
-        this.randomizeDogs();//TODO: fix images to not repeat the same image
-      })
-      .catch( error => console.log(error));
-  }
+  componentWillMount = async () => {
+    const breeds = await this.getBreeds();
+    this.setState({ breeds });
+    const images = await this.getBreedImages(breeds);
+    this.setState({ images });
+    this.randomizeDogs();
+  };
 
-  getBreeds = async() => {
+  getBreeds = async () => {
     const response = await fetch('/api/breeds/list');
     const body = await response.json();
 
-    if ( response.status !== 200 ) throw Error(body.message);
-    else return body.message;
-  }
+    if (response.status !== 200) {
+      throw Error(body.message);
+    } else {
+      return body.message;
+    }
+  };
 
   getBreedImages = async breeds => {
-    let images = {};
-    for(const breed of breeds) {
-      let image = localStorage[breed];
-
-      if(image) {
-        images[breed] = image;
-      }
-      else {
-        image = await this.getBreedImage(breed)
-        localStorage.setItem(breed, image);
-        images[breed] = image;
-      }
-    }
-    return images;
-  }
+    return await Promise.all(
+      breeds.map(async breed => {
+        if (localStorage[breed]) {
+          return localStorage[breed];
+        } else {
+          const image = await this.getBreedImage(breed);
+          localStorage.setItem(breed, image);
+          return image;
+        }
+      })
+    );
+  };
 
   getBreedImage = async breed => {
     const response = await fetch(`/api/breed/${breed}/images/random`);
     const body = await response.json();
 
-    if(response.status !== 200) throw Error(body.message);
+    if (response.status !== 200) throw Error(body.message);
     else return body.message;
-  }
+  };
 
   randomizeDogs() {
     const { breeds, images } = this.state;
-    var selectedDogs = {};
-    var selectedDog = '';
-    var breedLength = breeds.length;
+    const selectedDogs = [];
+    let selectedDog = '';
+    const breedLength = breeds.length;
 
-    while (Object.keys(selectedDogs).length < 6) {
-      var index = Math.round(Math.random() * (breedLength - 1));
-      var breed = breeds[index];
-      var image = images[breed];
+    for (let i = 0; i < gameTileCount; i++) {
+      const index = Math.round(Math.random() * (breedLength - 1));
+      const breed = breeds[index];
+      const image = images[index];
 
-      selectedDogs[breed] = image;
+      selectedDogs.push({ [breed]: image });
 
-      selectedDog = (selectedDog === '')?      breed :
-                    (Math.random() * 1 < 0.5)? breed : selectedDog;
+      selectedDog =
+        selectedDog === ''
+          ? breed
+          : Math.random() * 1 < 0.5 ? breed : selectedDog;
     }
-    
+
     this.setState({
       selectedDogs,
       selectedDog
@@ -182,20 +92,14 @@ class App extends Component {
   stopRestart() { this.setState({restart: false})}
 
   render() {
-    const { 
-      breeds, images, 
-      selectedDogs, selectedDog, 
-      restart
-     } = this.state;
-    const breedLength = breeds.length;
-
-    if(breedLength === 0 || isEmpty(images)) {
-      return <div className="App"></div>
+    const { breeds, images, selectedDogs, selectedDog } = this.state;
+    if (!breeds.length || isEmpty(images)) {
+      return <div className="App" />;
     }
 
     return (
       <div className="App">
-        <NamePanel selectedDog={selectedDog}/>
+        <NamePanel selectedDog={selectedDog} />
 
         <PicturePanel
           selectedDogs={selectedDogs}
