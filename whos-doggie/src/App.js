@@ -16,7 +16,7 @@ class App extends Component {
   state = {
     breeds: [],
     images: {},
-    selectedDogs: {},
+    selectedDogs: [],
     selectedDog: '',
     restart: false
   };
@@ -92,7 +92,7 @@ class App extends Component {
   stopRestart() { this.setState({restart: false})}
 
   render() {
-    const { breeds, images, selectedDogs, selectedDog } = this.state;
+    const { breeds, images, selectedDogs, selectedDog, restart } = this.state;
     if (!breeds.length || isEmpty(images)) {
       return <div className="App" />;
     }
