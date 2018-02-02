@@ -16,8 +16,9 @@ class App extends Component {
   state = {
     breeds: [],
     images: {},
-    selectedDogs: [],
-    selectedDog: ''
+    selectedDogs: {},
+    selectedDog: '',
+    restart: false
   };
 
   componentWillMount = async () => {
@@ -86,9 +87,12 @@ class App extends Component {
     });
   }
 
+  startRestart() { this.setState({restart: true})}
+
+  stopRestart() { this.setState({restart: false})}
+
   render() {
     const { breeds, images, selectedDogs, selectedDog } = this.state;
-
     if (!breeds.length || isEmpty(images)) {
       return <div className="App" />;
     }
@@ -100,7 +104,10 @@ class App extends Component {
         <PicturePanel
           selectedDogs={selectedDogs}
           selectedDog={selectedDog}
+          restart={restart}
           randomizeDogs={() => this.randomizeDogs()}
+          startRestart={() => this.startRestart()}
+          stopRestart={() => this.stopRestart()}
         />
       </div>
     );
